@@ -220,7 +220,10 @@ emacs respect the newly set opam switch. In addition to setting
 environment variables such as PATH and CAML_LD_LIBRARY_PATH, this
 also sets `exec-path', which controls emacs'
 subprocesses (`call-process', `make-process' and similar
-functions)."
+functions).
+
+For obvious resons, `opam-set-switch' will only affect emacs and
+not any other shells outside emacs."
   (interactive
    (let* ((switches (opam-get-switches))
           (default (car switches))
