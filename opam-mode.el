@@ -32,6 +32,9 @@
 ;;
 ;; For obvious reasons, `opam-set-switch' does not change the switch
 ;; of any other shell.
+;;
+;; Contrary to the file name, this file does not (yet) provide a minor
+;; mode.
 ;; 
 
 (require 'seq)
