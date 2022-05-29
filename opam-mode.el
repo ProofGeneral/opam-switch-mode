@@ -1,5 +1,42 @@
+;;; opam-mode.el --- select opam switches within emacs  -*- lexical-binding: t; -*-
+;;
+;; Copyright (C) 2021 Hendrik Tews
+;;
+;; Authors: Hendrik Tews
+;; Maintainer: Hendrik Tews <hendrik@askra.de>
+;;
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;;
+;; This file is free software: you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation, either version 3 of the
+;; License, or (at your option) any later version.
+;; 
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+;; General Public License in file COPYING in this or one of the parent
+;; directories for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with "prooftree". If not, see <http://www.gnu.org/licenses/>.
+;; 
+;; 
+;;; Commentary:
+;;
+;; Provide command `opam-set-switch' to change the opam switch of the
+;; running emacs session. The command reads the name of the switch in
+;; the minibuffer, providing completion with all available switches.
+;; With no input (i.e., leaving the minibuffer empty) the environment
+;; is reset to the state before the first call of `opam-set-switch'.
+;;
+;; For obvious reasons, `opam-set-switch' does not change the switch
+;; of any other shell.
+;; 
 
 (require 'seq)
+
+;;; User options and variables
 
 (defcustom opam-program-name "opam"
   "XXX")
@@ -12,6 +49,9 @@
     "OPAMCOLOR=never"
     "LC_ALL=C")
   "XXX")
+
+
+;;; Code
 
 (defun opam-run-command-without-stderr (sub-cmd
                                         &optional switch sexp
