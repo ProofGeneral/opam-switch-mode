@@ -34,33 +34,6 @@
     (apply 'opam-run-command-without-stderr sub-cmd switch sexp args)
     (buffer-string)))
 
-(defun opam-run-command-with-stderr (err-buf sub-cmd &optional switch sexp &rest args)
-  "XXX"
-  (let ((process-environment
-         (append opam-common-environment process-environment))
-        (options (append args opam-common-options))
-        (temp-file (make-nearby-temp-file "emacs-opam-")))
-    (when switch
-      (push (format "--switch=%s" switch) options))
-    (when sexp
-      (push "--sexp" options))
-    (apply 'process-file opam-program-name
-                    nil (list t temp-file) nil sub-cmd options)
-    (with-current-buffer err-buf
-      (insert-file-contents temp-file))
-    (ignore-errors (delete-file temp-file))))
-
-;; (defun test (sub-cmd switch sexp)
-;;   (let (err-buf stdout-string)
-;;     (with-temp-buffer
-;;       (setq err-buf (current-buffer))
-;;       (with-temp-buffer
-;;         (opam-run-command-with-stderr err-buf sub-cmd switch sexp)
-;;         (setq stdout-string (buffer-string)))
-;;       (cons stdout-string (buffer-string)))))
-
-
-
 (defun opam-get-root ()
   (let ((root (opam-command-as-string "var" nil nil "root")))
     (when (eq (aref root (1- (length root))) ?\n)
@@ -127,6 +100,13 @@
           (seq-remove (lambda (dir) (string-prefix-p opam-root dir)) exec-path))
     (push new-bin-dir exec-path)))
   
+(defun opam-reset-env ()
+  "XXX"
+  (mapc (lambda (x) (setenv (car x) (cadr x))) opam-saved-env)
+  (setq exec-path opam-saved-exec-path)
+  (setq opam-saved-env nil)
+  (setq opam-saved-exec-path nil))
+
 
 (defun opam-set-switch (switch-name)
   "XXX"
