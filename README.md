@@ -1,12 +1,15 @@
 # opam mode
 
 Provide command `opam-set-switch` to change the opam switch of the
-running emacs session. The command reads the name of the switch in
-the minibuffer, providing completion with all available switches,
-see the documentation of `opam-set-switch` below.
+running emacs session and minor mode `opam-mode` to select the opam
+switch via a menu bar menu.
 
-Contrary to the file name, this file does not (yet) provide a minor
-mode.
+The menu is generated each time the minor mode is enabled and
+contains the switches that are known at that time. If you create a
+new switch, re-enable the minor mode to get it added to the menu.
+The menu contains an additional entry "reset" to reset the
+environment to the state when emacs was started.
+
 
 ## Command `opam-set-switch`
 

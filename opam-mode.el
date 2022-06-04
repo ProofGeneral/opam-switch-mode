@@ -25,16 +25,23 @@
 ;;; Commentary:
 ;;
 ;; Provide command `opam-set-switch' to change the opam switch of the
-;; running emacs session. The command reads the name of the switch in
-;; the minibuffer, providing completion with all available switches.
-;; With no input (i.e., leaving the minibuffer empty) the environment
-;; is reset to the state before the first call of `opam-set-switch'.
+;; running emacs session and minor mode `opam-mode' to select the opam
+;; switch via a menu bar menu.
+;;
+;; `opam-set-switch' reads the name of the switch in the minibuffer,
+;; providing completion with all available switches. With no input
+;; (i.e., leaving the minibuffer empty) the environment is reset to
+;; the state before the first call of `opam-set-switch'.
+;;
+;; The menu is generated each time the minor mode is enabled and
+;; contains the switches that are known at that time. If you create a
+;; new switch, re-enable the minor mode to get it added to the menu.
+;; The menu contains an additional entry "reset" to reset the
+;; environment to the state when emacs was started.
 ;;
 ;; For obvious reasons, `opam-set-switch' does not change the switch
 ;; of any other shell.
 ;;
-;; Contrary to the file name, this file does not (yet) provide a minor
-;; mode.
 ;; 
 
 (require 'seq)
@@ -245,5 +252,57 @@ not any other shells outside emacs."
       (unless opam-saved-env
         (opam-save-current-env opam-env))
       (opam-set-env opam-env))))
+
+
+;;; minor mode, keymap and menu
+
+(defvar opam-mode-keymap (make-sparse-keymap)
+  "Keymap for `opam-mode'")
+
+(defun opam-menu-items ()
+  "Create list or opam switches as menu items for `easy-menu'."
+  (nconc
+   ;; first the list with all the real opam switches
+   (mapcar
+    (lambda (switch)
+      (vconcat
+       `(,switch
+         (opam-set-switch ,switch)
+         :active t
+         :help ,(concat "select opam switch \"" switch "\""))))
+    (opam-get-switches))
+   ;; now reset as last element
+   '(
+     ["reset" (opam-set-switch "")
+      :active opam-saved-env
+      :help "reset to state when emacs was started"]
+     )))
+
+(defun opam-setup-opam-mode ()
+  "Re-define menu when for `opam-mode'.
+This function runs when `opam-mode' is enabled to setup
+`opam-mode'. Currently it only redefines the menu.
+
+Note that the code for setting up the keymap and running the hook
+is automatically created by `define-minor-mode'."
+  (easy-menu-define
+    opam-mode-menu
+    opam-mode-keymap
+    "opam mode menu"
+    (cons "opam"
+          (opam-menu-items))))
+
+(define-minor-mode opam-mode
+  "Toggle opam mode"
+  ;; init value - should be nil
+  nil
+  ;; lighter
+  " OP"
+  ;; keymap
+  opam-mode-keymap
+  :group 'opam-mode
+  ;; body
+  (when opam-mode
+    (opam-setup-opam-mode)))
 
 (provide 'opam-mode)
