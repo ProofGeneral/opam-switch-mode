@@ -92,6 +92,8 @@ discarded. If SWITCH is not nil, an option \"--swith=SWITCH\" is
 added. If SEXP is t, option --sexep is added. All remaining
 arguments ARGS are added as arguments.
 
+Return exit status of the opam invocation.
+
 Internally this function uses `process-file' internally and will
 therfore respect file-name handlers specified via
 `default-directory'."
@@ -107,17 +109,22 @@ therfore respect file-name handlers specified via
                nil '(t nil) nil sub-cmd options)))
 
 (defun opam-command-as-string (sub-cmd &optional switch sexp &rest args)
-  "Return output of opam SUB-CMD as string.
+  "Return output of opam SUB-CMD as string or nil.
 Same as `opam-run-command-without-stderr' but return all output
-as string."
+as string. Return nil if opam command fails."
   (with-temp-buffer
-    (apply 'opam-run-command-without-stderr sub-cmd switch sexp args)
-    (buffer-string)))
+    (let ((status
+           (apply 'opam-run-command-without-stderr sub-cmd switch sexp args)))
+      (if (eq status 0)
+          (buffer-string)
+        nil))))
 
 (defun opam-get-root ()
   "Get the opam root directory.
 This is the opam variable 'root'."
   (let ((root (opam-command-as-string "var" nil nil "root")))
+    (unless root
+      (error "opam var root failed"))
     (when (eq (aref root (1- (length root))) ?\n)
       (setq root (substring root 0 -1)))
     root))
@@ -145,7 +152,9 @@ This is the opam variable 'root'."
   "Return all opam switches as list of strings."
   (let (opam-switches)
     (with-temp-buffer
-      (opam-run-command-without-stderr "switch")
+      (unless (eq (opam-run-command-without-stderr "switch") 0)
+        ;; opam exit status different from 0 -- some error occured
+        (error "opam switch failed"))
       (goto-char (point-min))
       (forward-line)
       (while (re-search-forward "^.. *\\([^ ]*\\).*$" nil t)
@@ -250,9 +259,13 @@ not any other shells outside emacs."
     (error "No saved opam environment, cannot reset."))
   (if (equal switch-name "")
       (opam-reset-env)
-    (let ((opam-env
-           (car (read-from-string
-                 (opam-command-as-string "env" switch-name t)))))
+    (let ((output-string (opam-command-as-string "env" switch-name t))
+          opam-env)
+      (unless output-string
+        (error
+         "opam env %s failed - probably because of invalid opam switch \"%s\""
+         switch-name switch-name))
+      (setq opam-env (car (read-from-string output-string)))
       (unless opam-saved-env
         (opam-save-current-env opam-env))
       (opam-set-env opam-env))))
