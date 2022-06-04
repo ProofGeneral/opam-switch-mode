@@ -211,6 +211,13 @@ switch overwrote them."
   (setq opam-saved-exec-path nil))
 
 
+(defun opam-get-current-switch ()
+  "Return name of current switch or \"<none>\"."
+  (let ((current-switch (getenv "OPAM_SWITCH_PREFIX")))
+    (if current-switch
+         (file-name-nondirectory current-switch)
+      "<none>")))
+
 (defun opam-set-switch (switch-name)
   "Chose and set an opam switch.
 Set opam swith SWITCH-NAME, which must be a valid opam switch
@@ -234,10 +241,7 @@ not any other shells outside emacs."
   (interactive
    (let* ((switches (opam-get-switches))
           (default (car switches))
-          (current-switch (getenv "OPAM_SWITCH_PREFIX")))
-     (if current-switch
-         (setq current-switch (file-name-nondirectory current-switch))
-       (setq current-switch "<none>"))
+          (current-switch (opam-get-current-switch)))
      (list
       (completing-read
        (format "current switch %s; switch to (empty to reset): " current-switch)
@@ -262,7 +266,12 @@ not any other shells outside emacs."
 (defun opam-menu-items ()
   "Create list or opam switches as menu items for `easy-menu'."
   (nconc
-   ;; first the list with all the real opam switches
+   ;; first the current switch as info
+   '(["current: " nil
+      :active t
+      :suffix (opam-get-current-switch)
+      :help "Shows the currently selected opam switch"])
+   ;; then the list with all the real opam switches
    (mapcar
     (lambda (switch)
       (vconcat
