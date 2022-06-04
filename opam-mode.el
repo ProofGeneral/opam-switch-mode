@@ -279,11 +279,12 @@ not any other shells outside emacs."
 (defun opam-menu-items ()
   "Create list or opam switches as menu items for `easy-menu'."
   (nconc
-   ;; first the current switch as info
-   '(["current: " nil
+   ;; first the current switch as info with a separator
+   '(["current switch: " nil
       :active t
       :suffix (opam-get-current-switch)
-      :help "Shows the currently selected opam switch"])
+      :help "Shows the currently selected opam switch"]
+     "-------")
    ;; then the list with all the real opam switches
    (mapcar
     (lambda (switch)
