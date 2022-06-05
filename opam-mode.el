@@ -79,6 +79,13 @@ Otherwise parsing the output of opam commands won't work."
   :group 'opam-mode
   :type '(repeat string))
 
+(defcustom opam-change-opam-switch-hook nil
+  "Hook run when the opam switch changes.
+This is used, for instance, to let Proof General kill the coq
+background process when the opam switch changes."
+  :group 'opam-mode
+  :type '(repeat function))
+  
 
 ;;; Code
 
@@ -245,6 +252,10 @@ also sets `exec-path', which controls emacs'
 subprocesses (`call-process', `make-process' and similar
 functions).
 
+When the switch is changed, `opam-change-opam-switch-hook' runs. This
+can be used to inform other modes that may run background processes
+that depend on the currently active opam switch.
+
 For obvious resons, `opam-set-switch' will only affect emacs and
 not any other shells outside emacs."
   (interactive
@@ -268,7 +279,8 @@ not any other shells outside emacs."
       (setq opam-env (car (read-from-string output-string)))
       (unless opam-saved-env
         (opam-save-current-env opam-env))
-      (opam-set-env opam-env))))
+      (opam-set-env opam-env)))
+  (run-hooks 'opam-change-opam-switch-hook))
 
 
 ;;; minor mode, keymap and menu

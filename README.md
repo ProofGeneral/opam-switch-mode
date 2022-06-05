@@ -32,5 +32,14 @@ environment variables such as PATH and CAML_LD_LIBRARY_PATH, this
 also sets `exec-path`, which controls emacs' subprocesses
 (`call-process`, `make-process` and similar functions).
 
+When the switch is changed, `opam-change-opam-switch-hook` runs. This
+can be used to inform other modes that may run background processes
+that depend on the currently active opam switch.
+
 For obvious resons, `opam-set-switch` will only affect emacs and
 not any other shells outside emacs.
+
+## Opam mode aware modes
+
+- Proof General can kill the coq background process, when the
+  opam switch changes, see `coq-kill-coq-on-opam-switch`.
