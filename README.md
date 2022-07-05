@@ -16,7 +16,7 @@ Invoke with `M-x opam-switch-set-switch`.
 
 Chose and set an opam switch.
 
-Set opam swith SWITCH-NAME, which must be a valid opam switch name. When
+Set opam switch SWITCH-NAME, which must be a valid opam switch name. When
 called interactively, the switch name must be entered in the minibuffer,
 which forces completion to a valid switch name or the empty string.
 
