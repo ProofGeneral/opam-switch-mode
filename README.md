@@ -12,9 +12,9 @@ entry "reset" to reset the environment to the state when emacs was started.
 
 ## Command `opam-switch-set-switch`
 
-Invoke with `M-x opam-switch-set-switch`.
+Invoke with `M-x opam-switch-set-switch RET`.
 
-Chose and set an opam switch.
+Choose and set an opam switch.
 
 Set opam switch SWITCH-NAME, which must be a valid opam switch name. When
 called interactively, the switch name must be entered in the minibuffer,
@@ -33,10 +33,11 @@ When the switch is changed, `opam-switch-change-opam-switch-hook` runs.
 This can be used to inform other modes that may run background processes
 that depend on the currently active opam switch.
 
-For obvious resons, `opam-switch-set-switch` will only affect emacs and not
+For obvious reasons, `opam-switch-set-switch` will only affect emacs and not
 any other shells outside emacs.
 
-## Opam mode aware modes
+## opam-switch-mode aware modes
 
-- Proof General can kill the coq background process, when the opam switch
-  changes, see `coq-kill-coq-on-opam-switch`.
+- [Proof General](https://proofgeneral.github.io/)
+  can kill the coq background process, when the opam switch changes,
+  see `coq-kill-coq-on-opam-switch`.

@@ -20,8 +20,8 @@
 ;; 
 ;; You should have received a copy of the GNU General Public License
 ;; along with "prooftree". If not, see <http://www.gnu.org/licenses/>.
-;; 
-;; 
+;;
+;;
 ;;; Commentary:
 ;;
 ;; Provide command `opam-switch-set-switch' to change the opam switch
@@ -43,7 +43,6 @@
 ;; For obvious reasons, `opam-switch-set-switch' does not change the
 ;; switch of any other shell.
 ;;
-;; 
 
 (require 'seq)
 
@@ -53,7 +52,6 @@
   "Customization for opam switch support in Emacs"
   :group 'external)
 
-  
 (defcustom opsw--program-name "opam"
   "Name or path of the opam binary."
   :group 'opam-switch-mode
@@ -86,7 +84,6 @@ This is used, for instance, to let Proof General kill the coq
 background process when the opam switch changes."
   :group 'opam-switch-mode
   :type '(repeat function))
-  
 
 ;;; Code
 
@@ -236,7 +233,7 @@ switch overwrote them."
       "<none>")))
 
 (defun opsw--set-switch (switch-name)
-  "Chose and set an opam switch.
+  "Choose and set an opam switch.
 Set opam switch SWITCH-NAME, which must be a valid opam switch
 name. When called interactively, the switch name must be entered
 in the minibuffer, which forces completion to a valid switch name
@@ -258,7 +255,7 @@ runs. This a can be used to inform other modes that may run
 background processes that depend on the currently active opam
 switch.
 
-For obvious resons, `opsw--set-switch' will only affect emacs and
+For obvious reasons, `opsw--set-switch' will only affect emacs and
 not any other shells outside emacs."
   (interactive
    (let* ((switches (opsw--get-switches))
