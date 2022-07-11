@@ -292,7 +292,7 @@ not any other shells outside emacs."
 
 (defun opsw--menu-items ()
   "Create list of opam switches as menu items for `easy-menu'."
-  (nconc
+  (append
    ;; first the current switch as info with a separator
    '(["current switch: " nil
       :active t
