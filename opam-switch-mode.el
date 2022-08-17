@@ -1,9 +1,12 @@
-;;; opam-switch-mode.el --- select opam switches within emacs  -*- lexical-binding: t; -*-
+;;; opam-switch-mode.el --- Select opam switches within Emacs  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2021 Hendrik Tews
 ;;
 ;; Authors: Hendrik Tews
 ;; Maintainer: Hendrik Tews <hendrik@askra.de>
+;; URL: https://github.com/ProofGeneral/opam-switch-mode
+;; Package-Requires: ((emacs "25.1"))
+;; Version: 1.0-git
 ;;
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;;
@@ -48,21 +51,21 @@
 
 ;;; User options and variables
 
-(defgroup opam-switch-mode ()
+(defgroup opam-switch ()
   "Customization for opam switch support in Emacs"
   :group 'external)
 
 
 (defcustom opsw--program-name "opam"
   "Name or path of the opam binary."
-  :group 'opam-switch-mode
+  :group 'opam-switch
   :type 'string)
 
 (defcustom opsw--common-options ()
   "Options to be supplied to every opam invocation.
 This must be a list of strings, each member string an option
 accepted by opam."
-  :group 'opam-switch-mode
+  :group 'opam-switch
   :type '(repeat string))
 
 (defcustom opsw--common-environment
@@ -76,14 +79,14 @@ element should have the form of ENVVARNAME=VALUE.
 The process environment must ensure that output is plain ascii
 without color, non-ascii arrow symbols and that it is in English.
 Otherwise parsing the output of opam commands won't work."
-  :group 'opam-switch-mode
+  :group 'opam-switch
   :type '(repeat string))
 
 (defcustom opam-switch-change-opam-switch-hook nil
   "Hook run when the opam switch changes.
 This is used, for instance, to let Proof General kill the coq
 background process when the opam switch changes."
-  :group 'opam-switch-mode
+  :group 'opam-switch
   :type '(repeat function))
 
 ;;; Code:
@@ -316,8 +319,7 @@ not any other shells outside Emacs."
    '(
      ["reset" (opsw--set-switch "")
       :active opsw--saved-env
-      :help "reset to state when emacs was started"]
-     )))
+      :help "reset to state when emacs was started"])))
 
 (defun opsw--setup-opam-switch-mode ()
   "Re-define menu for `opam-switch-mode'.
@@ -341,7 +343,7 @@ is automatically created by `define-minor-mode'."
   " OPSW"
   ;; keymap
   opsw--mode-keymap
-  :group 'opam-switch-mode
+  :group 'opam-switch
   ;; body
   (when opam-switch-mode
     (opsw--setup-opam-switch-mode)))
