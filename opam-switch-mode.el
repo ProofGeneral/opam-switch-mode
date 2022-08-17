@@ -290,6 +290,7 @@ not any other shells outside Emacs."
       (opam-switch--set-env opam-env)))
   (run-hooks 'opam-switch-change-opam-switch-hook))
 
+;;;###autoload
 (defalias 'opam-switch-set-switch #'opam-switch--set-switch)
 
 ;;; minor mode, keymap and menu
@@ -335,6 +336,7 @@ is automatically created by `define-minor-mode'."
     (cons "opam-switch"
           (opam-switch--menu-items))))
 
+;;;###autoload
 (define-minor-mode opam-switch-mode
   "Toggle opam mode"
   ;; init value - should be nil
