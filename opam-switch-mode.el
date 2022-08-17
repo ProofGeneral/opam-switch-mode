@@ -11,13 +11,13 @@
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation, either version 3 of the
 ;; License, or (at your option) any later version.
-;; 
+;;
 ;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 ;; General Public License in file COPYING in this or one of the parent
 ;; directories for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with "prooftree". If not, see <http://www.gnu.org/licenses/>.
 ;;
@@ -25,20 +25,20 @@
 ;;; Commentary:
 ;;
 ;; Provide command `opam-switch-set-switch' to change the opam switch
-;; of the running emacs session and minor mode `opam-switch-mode' to
+;; of the running Emacs session and minor mode `opam-switch-mode' to
 ;; select the opam switch via a menu bar menu.
 ;;
 ;; `opam-switch-set-switch' reads the name of the switch in the
-;; minibuffer, providing completion with all available switches. With
+;; minibuffer, providing completion with all available switches.  With
 ;; no input (i.e., leaving the minibuffer empty) the environment is
 ;; reset to the state before the first call of
 ;; `opam-switch-set-switch'.
 ;;
 ;; The menu is generated each time the minor mode is enabled and
-;; contains the switches that are known at that time. If you create a
+;; contains the switches that are known at that time.  If you create a
 ;; new switch, re-enable the minor mode to get it added to the menu.
 ;; The menu contains an additional entry "reset" to reset the
-;; environment to the state when emacs was started.
+;; environment to the state when Emacs was started.
 ;;
 ;; For obvious reasons, `opam-switch-set-switch' does not change the
 ;; switch of any other shell.
@@ -51,6 +51,7 @@
 (defgroup opam-switch-mode ()
   "Customization for opam switch support in Emacs"
   :group 'external)
+
 
 (defcustom opsw--program-name "opam"
   "Name or path of the opam binary."
@@ -85,16 +86,16 @@ background process when the opam switch changes."
   :group 'opam-switch-mode
   :type '(repeat function))
 
-;;; Code
+;;; Code:
 
 (defun opsw--run-command-without-stderr (sub-cmd
                                         &optional switch sexp
                                         &rest args)
   "Run opam SUB-CMD, without capturing error output.
 Run opam SUB-CMD with additional arguments and insert the output
-in the current buffer at point. Error output (stderr) is
-discarded. If SWITCH is not nil, an option \"--swith=SWITCH\" is
-added. If SEXP is t, option --sexep is added. All remaining
+in the current buffer at point.  Error output (stderr) is
+discarded.  If SWITCH is not nil, an option \"--swith=SWITCH\" is
+added. If SEXP is t, option --sexp is added. All remaining
 arguments ARGS are added as arguments.
 
 Return exit status of the opam invocation.
@@ -114,9 +115,15 @@ therfore respect file-name handlers specified via
                nil '(t nil) nil sub-cmd options)))
 
 (defun opsw--command-as-string (sub-cmd &optional switch sexp &rest args)
-  "Return output of opam SUB-CMD as string or nil.
-Same as `opsw--run-command-without-stderr' but return all output
-as string. Return nil if opam command fails."
+  "Run opam SUB-CMD, with additional arguments, without capturing stderr.
+Return nil if the opam command fails.
+Return all output as string otherwise.
+
+If SWITCH is not nil, an option \"--swith=SWITCH\" is added.
+If SEXP is t, option --sexp is added.
+All remaining arguments ARGS are added as arguments.
+
+This function  `opsw--run-command-without-stderr'."
   (with-temp-buffer
     (let ((status
            (apply 'opsw--run-command-without-stderr sub-cmd switch sexp args)))
@@ -129,7 +136,7 @@ as string. Return nil if opam command fails."
 This is the opam variable 'root'."
   (let ((root (opsw--command-as-string "var" nil nil "root")))
     (unless root
-      (error "opam var root failed"))
+      (error "Command 'opam var root' failed"))
     (when (eq (aref root (1- (length root))) ?\n)
       (setq root (substring root 0 -1)))
     root))
@@ -159,7 +166,7 @@ This is the opam variable 'root'."
     (with-temp-buffer
       (unless (eq (opsw--run-command-without-stderr "switch") 0)
         ;; opam exit status different from 0 -- some error occured
-        (error "opam switch failed"))
+        (error "Command 'opam switch' failed"))
       (goto-char (point-min))
       (forward-line)
       (while (re-search-forward "^.. *\\([^ ]*\\).*$" nil t)
@@ -171,38 +178,38 @@ This is the opam variable 'root'."
 
 (defvar opsw--saved-env nil
   "Saved environment variables, overwritten by an opam switch.
-This is a list of saved environment variables. Each saved
+This is a list of saved environment variables.  Each saved
 variable is a list of two strings, the variable and the value.
 Set when the first chosen opam switch overwrites the
 environment.")
 
 (defvar opsw--saved-exec-path nil
-  "Saved value of `exec-path'.
-Set when the first chosen opam switch overwrites `exec-path'.")
+  "Saved value of variable `exec-path'.
+Set when the first chosen opam switch overwrites variable `exec-path'.")
 
 
 (defun opsw--save-current-env (opam-env)
   "Save the current environment values relevant to opam.
 Argument OPAM-ENV, coming from calling `opam env', is only used
-to find the environment variables to save. `exec-path' is saved
-in addition to environment variables."
+to find the environment variables to save.
+The variable `exec-path' is saved in addition to environment variables."
   (setq opsw--saved-env
 	(mapcar (lambda (x) (list (car x) (getenv (car x)))) opam-env))
   (setq opsw--saved-exec-path exec-path))
-  
-(defun opsw--set-env (opam-env)
-  "Sets a new opam environment.
-Environment variables in OPAM-ENV are put into the environment of
-the current Emacs session. `exec-path' is changed to match the
-environment PATH.
 
-It is unclear which value in `exec-path' corresponds to a
+(defun opsw--set-env (opam-env)
+  "Set a new opam environment.
+Environment variables in OPAM-ENV are put into the environment of
+the current Emacs session.  The variable `exec-path' is changed to
+match the environment PATH.
+
+It is unclear which value in variable `exec-path' corresponds to a
 previously set opam switch and also which entry in the PATH
 environment variable in OPAM-ENV corresponds to the new switch.
-Therefore this function uses the following heuristic. First all
-entries in `exec-path' that match `opsw--root' are deleted. Then,
-the first entry for PATH that maches `opsw--root' is added at the
-front of `exec-path'."
+Therefore this function uses the following heuristic.  First all
+entries in variable `exec-path' that match `opsw--root' are deleted.
+Then, the first entry for PATH that maches `opsw--root' is added at the
+front of variable `exec-path'."
   (let ((new-bin-dir
          (seq-find
           (lambda (dir) (string-prefix-p opsw--root dir))
@@ -213,11 +220,11 @@ front of `exec-path'."
     (setq exec-path
           (seq-remove (lambda (dir) (string-prefix-p opsw--root dir)) exec-path))
     (push new-bin-dir exec-path)))
-  
+
 (defun opsw--reset-env ()
   "Reset process environment to the state before setting the first opam switch.
-Reset all environment variables and `exec-path' to the values
-they had in this emacs session before the first chosen opam
+Reset variable `exec-path' and all environment variables to the values
+they had in this Emacs session before the first chosen opam
 switch overwrote them."
   (mapc (lambda (x) (setenv (car x) (cadr x))) opsw--saved-env)
   (setq exec-path opsw--saved-exec-path)
@@ -235,28 +242,28 @@ switch overwrote them."
 (defun opsw--set-switch (switch-name)
   "Choose and set an opam switch.
 Set opam switch SWITCH-NAME, which must be a valid opam switch
-name. When called interactively, the switch name must be entered
+name.  When called interactively, the switch name must be entered
 in the minibuffer, which forces completion to a valid switch name
 or the empty string.
 
-Setting the opam switch for the first time inside emacs will save
-the current environment. Using the empty string for SWITCH-NAME
+Setting the opam switch for the first time inside Emacs will save
+the current environment.  Using the empty string for SWITCH-NAME
 will reset the environment to the saved values.
 
 The switch is set such that all process invocations from
-emacs respect the newly set opam switch. In addition to setting
+Emacs respect the newly set opam switch.  In addition to setting
 environment variables such as PATH and CAML_LD_LIBRARY_PATH, this
-also sets `exec-path', which controls emacs'
+also sets variable `exec-path', which controls Emacs'
 subprocesses (`call-process', `make-process' and similar
 functions).
 
 When the switch is changed, `opam-switch-change-opam-switch-hook'
-runs. This a can be used to inform other modes that may run
+runs.  This a can be used to inform other modes that may run
 background processes that depend on the currently active opam
 switch.
 
-For obvious reasons, `opsw--set-switch' will only affect emacs and
-not any other shells outside emacs."
+For obvious reasons, `opsw--set-switch' will only affect Emacs and
+not any other shells outside Emacs."
   (interactive
    (let* ((switches (opsw--get-switches))
           (current-switch (opsw--get-current-switch)))
@@ -265,14 +272,14 @@ not any other shells outside emacs."
        (format "current switch %s; switch to (empty to reset): " current-switch)
        switches nil t "" 'opsw--switch-history nil))))
   (when (and (equal switch-name "") (not opsw--saved-env))
-    (error "No saved opam environment, cannot reset."))
+    (error "No saved opam environment, cannot reset"))
   (if (equal switch-name "")
       (opsw--reset-env)
     (let ((output-string (opsw--command-as-string "env" switch-name t))
           opam-env)
       (unless output-string
         (error
-         "opam env %s failed - probably because of invalid opam switch \"%s\""
+         "Command 'opam env %s' failed - probably because of invalid opam switch \"%s\""
          switch-name switch-name))
       (setq opam-env (car (read-from-string output-string)))
       (unless opsw--saved-env
@@ -285,7 +292,7 @@ not any other shells outside emacs."
 ;;; minor mode, keymap and menu
 
 (defvar opsw--mode-keymap (make-sparse-keymap)
-  "Keymap for `opam-switch-mode'")
+  "Keymap for `opam-switch-mode'.")
 
 (defun opsw--menu-items ()
   "Create list of opam switches as menu items for `easy-menu'."
@@ -340,3 +347,5 @@ is automatically created by `define-minor-mode'."
     (opsw--setup-opam-switch-mode)))
 
 (provide 'opam-switch-mode)
+
+;;; opam-switch-mode.el ends here
