@@ -40,4 +40,4 @@ any other shells outside emacs.
 
 - [Proof General](https://proofgeneral.github.io/)
   can kill the coq background process, when the opam switch changes,
-  see `coq-kill-coq-on-opam-switch`.
+  see [`coq-kill-coq-on-opam-switch`](https://proofgeneral.github.io/doc/master/userman/Coq-Proof-General/#index-coq_002dkill_002dcoq_002don_002dopam_002dswitch).
