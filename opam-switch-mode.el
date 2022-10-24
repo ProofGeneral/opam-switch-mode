@@ -135,7 +135,8 @@ This function  `opam-switch--run-command-without-stderr'."
 
 (defun opam-switch--get-root ()
   "Get the opam root directory.
-This is the opam variable 'root'."
+This function gets the opam variable 'root'.
+This function should not be called directly; see `opam-switch--root'."
   (let ((root (opam-switch--command-as-string "var" nil nil "root")))
     (unless root
       (error "Command 'opam var root' failed"))
@@ -152,7 +153,7 @@ This is the opam variable 'root'."
       (let ((result
              (condition-case _sig
                  (opam-switch--get-root)
-               (file-missing (message "Can't set (opam-switch--root); is opam installed?") nil))))
+               (file-missing (error "Cannot run opam") nil))))
         (when result
           (setq opam-switch--root result)))))
 
@@ -352,9 +353,12 @@ The mode can be enabled only if opam is found and 'opam var root' succeeds."
   :keymap opam-switch--mode-keymap
   :group 'opam-switch
   (when opam-switch-mode
-    (if (opam-switch--root)
-        (opam-switch--setup-opam-switch-mode)
-      (setq opam-switch-mode nil))))
+    (condition-case sig
+        (progn
+          (opam-switch--root)
+          (opam-switch--setup-opam-switch-mode))
+      (t (setq opam-switch-mode nil)
+         (message "Opam-Switch mode disabled %s" (pp-to-string sig))))))
 
 (provide 'opam-switch-mode)
 
