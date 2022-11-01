@@ -1,4 +1,4 @@
-;;; opam-switch-mode.el --- Select opam switches via a menu -*- lexical-binding: t; -*-
+;;; opam-switch-mode.el --- Select OCaml opam switches via a menu -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2021 Hendrik Tews
 ;;
@@ -45,6 +45,8 @@
 ;;
 ;; For obvious reasons, `opam-switch-set-switch' does not change the
 ;; switch of any other shell.
+;;
+;; See https://opam.ocaml.org for comprehensive documentation on opam.
 ;;
 
 (require 'seq)
