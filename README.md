@@ -1,4 +1,6 @@
-# opam switch mode
+# opam-switch-mode
+
+[![MELPA](https://melpa.org/packages/opam-switch-mode-badge.svg)](https://melpa.org/#/opam-switch-mode)
 
 Provide command `opam-switch-set-switch` to change the opam switch of the
 running emacs session and minor mode `opam-switch-mode` to select the opam
@@ -9,6 +11,22 @@ switches that are known at that time. If you create a new switch, re-enable
 the minor mode to get it added to the menu. The menu contains an additional
 entry "reset" to reset the environment to the state when emacs was started.
 
+## Installing `opam-switch-mode`
+
+The recommended way to install the mode relies on the
+[MELPA](https://melpa.org/) repository of Emacs packages, and the
+[`use-package`](https://github.com/jwiegley/use-package) macro.
+Assuming you have already set up those in your `.emacs`, just write:
+
+```elisp
+(use-package opam-switch-mode
+  :ensure t
+  :hook
+  (coq-mode . opam-switch-mode))
+```
+
+so that the minor mode is automatically enabled when `coq-mode` is on,
+see also [`opam-switch-mode` aware modes](#opam-switch-mode-aware-modes).
 
 ## Command `opam-switch-set-switch`
 
@@ -36,8 +54,8 @@ that depend on the currently active opam switch.
 For obvious reasons, `opam-switch-set-switch` will only affect emacs and not
 any other shells outside emacs.
 
-## opam-switch-mode aware modes
+## `opam-switch-mode` aware modes
 
-- [Proof General](https://proofgeneral.github.io/)
+- `coq-mode` from [`proof-general`](https://proofgeneral.github.io/)
   can kill the coq background process, when the opam switch changes,
   see [`coq-kill-coq-on-opam-switch`](https://proofgeneral.github.io/doc/master/userman/Coq-Proof-General/#index-coq_002dkill_002dcoq_002don_002dopam_002dswitch).
