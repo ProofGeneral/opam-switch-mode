@@ -1,4 +1,6 @@
-# opam switch mode
+# opam-switch-mode
+
+[![MELPA](https://melpa.org/packages/opam-switch-mode-badge.svg)](https://melpa.org/#/opam-switch-mode)
 
 Provide command `opam-switch-set-switch` to change the opam switch of the
 running emacs session and minor mode `opam-switch-mode` to select the opam
