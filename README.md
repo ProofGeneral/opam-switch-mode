@@ -13,8 +13,8 @@ entry "reset" to reset the environment to the state when emacs was started.
 
 ## Installing `opam-switch-mode`
 
-The recommended way to install the mode relies on the
-[MELPA](https://melpa.org/) repository of Emacs packages, and the
+The recommended way to install this mode relies on the
+[MELPA](https://melpa.org/) repository of Emacs packages, along with the
 [`use-package`](https://github.com/jwiegley/use-package) macro.
 Assuming you have already set up those in your `.emacs`, just write:
 
