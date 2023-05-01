@@ -60,14 +60,12 @@
 
 (defcustom opam-switch-program-name "opam"
   "Name or path of the opam binary."
-  :group 'opam-switch
   :type 'string)
 
 (defcustom opam-switch-common-options ()
   "Options to be supplied to every opam invocation.
 This must be a list of strings, each member string an option
 accepted by opam."
-  :group 'opam-switch
   :type '(repeat string))
 
 (defcustom opam-switch-common-environment
@@ -81,21 +79,19 @@ element should have the form of ENVVARNAME=VALUE.
 The process environment must ensure that output is plain ascii
 without color, non-ascii arrow symbols and that it is in English.
 Otherwise parsing the output of opam commands won't work."
-  :group 'opam-switch
   :type '(repeat string))
 
 (defcustom opam-switch-change-opam-switch-hook nil
   "Hook run when the opam switch changes.
 This is used, for instance, to let Proof General kill the coq
 background process when the opam switch changes."
-  :group 'opam-switch
-  :type '(repeat function))
+  :type 'hook)
 
 ;;; Code:
 
 (defun opam-switch--run-command-without-stderr (sub-cmd
-                                        &optional switch sexp
-                                        &rest args)
+                                                &optional switch sexp
+                                                &rest args)
   "Run opam SUB-CMD, without capturing error output.
 Run opam SUB-CMD with additional arguments and insert the output
 in the current buffer at point.  Error output (stderr) is
@@ -117,7 +113,7 @@ therfore respect file-name handlers specified via
       (push "--sexp" options))
     ;; (message "run %s %s %s" opam-switch-program-name sub-cmd options)
     (apply #'process-file opam-switch-program-name
-               nil '(t nil) nil sub-cmd options)))
+           nil '(t nil) nil sub-cmd options)))
 
 (defun opam-switch--command-as-string (sub-cmd &optional switch sexp &rest args)
   "Run opam SUB-CMD, with additional arguments, without capturing stderr.
@@ -138,14 +134,14 @@ This function  `opam-switch--run-command-without-stderr'."
 
 (defun opam-switch--get-root ()
   "Get the opam root directory.
-This function gets the opam variable 'root'.
+This function gets the opam variable `root'.
 This function should not be called directly; see `opam-switch--root'."
   (let ((root (opam-switch--command-as-string "var" nil nil "root")))
     (unless root
       (error "Command 'opam var root' failed"))
-    (when (eq (aref root (1- (length root))) ?\n)
-      (setq root (substring root 0 -1)))
-    root))
+    (if (eq (aref root (1- (length root))) ?\n)
+        (substring root 0 -1)
+      root)))
 
 (defvar opam-switch--root nil
   "The opam root directory.")
@@ -154,9 +150,9 @@ This function should not be called directly; see `opam-switch--root'."
   "Set variable `opam-switch--root' once, if possible, and return it."
   (or opam-switch--root
       (let ((result
-             (condition-case _sig
+             (condition-case err
                  (opam-switch--get-root)
-               (file-missing (error "Cannot run opam") nil))))
+               (file-missing (error "Cannot run opam: %S" err) nil))))
         (when result
           (setq opam-switch--root result)))))
 
@@ -184,10 +180,10 @@ This function should not be called directly; see `opam-switch--root'."
         ;; opam exit status different from 0 -- some error occured
         (error "Command 'opam switch' failed"))
       (goto-char (point-min))
-      (forward-line)
-      (while (re-search-forward "^.. *\\([^ ]*\\).*$" nil t)
+      (forward-line)                    ;Skip first (header) line.
+      (while (re-search-forward "^.. *\\([^ \n\t]+\\)" nil t)
         (push (match-string 1) opam-switches))
-      opam-switches)))
+      (nreverse opam-switches))))
 
 (defvar opam-switch--switch-history nil
   "Minibuffer history list for `opam-switch--set-switch'.")
@@ -301,12 +297,15 @@ not any other shells outside Emacs."
       (opam-switch--set-env opam-env)))
   (run-hooks 'opam-switch-change-opam-switch-hook))
 
-;;;###autoload
+;; FIXME: This autoload didn't work.  If we want to autoload the command,
+;; then we need to place the autoload on the command itself (and arguably
+;; rename it without the "--").
+;; ;;;###autoload
 (defalias 'opam-switch-set-switch #'opam-switch--set-switch)
 
 ;;; minor mode, keymap and menu
 
-(defvar opam-switch--mode-keymap (make-sparse-keymap)
+(defvar opam-switch-mode-map (make-sparse-keymap)
   "Keymap for `opam-switch-mode'.")
 
 (defun opam-switch--menu-items ()
@@ -321,11 +320,10 @@ not any other shells outside Emacs."
    ;; then the list with all the real opam switches
    (mapcar
     (lambda (switch)
-      (vconcat
-       `(,switch
-         (opam-switch--set-switch ,switch)
-         :active t
-         :help ,(concat "select opam switch \"" switch "\""))))
+      `[,switch
+        (opam-switch--set-switch ,switch)
+        :active t
+        :help ,(concat "select opam switch \"" switch "\"")])
     (opam-switch--get-switches))
    ;; now reset as last element
    '(
@@ -342,26 +340,26 @@ Note that the code for setting up the keymap and running the hook
 is automatically created by `define-minor-mode'."
   (easy-menu-define
     opam-switch--mode-menu
-    opam-switch--mode-keymap
+    opam-switch-mode-map
     "opam mode menu"
+    ;; FIXME: Use `:filter'?
     (cons "opam-switch"
           (opam-switch--menu-items))))
 
 ;;;###autoload
 (define-minor-mode opam-switch-mode
   "Toggle opam-switch mode.
-The mode can be enabled only if opam is found and 'opam var root' succeeds."
-  :init-value nil
+The mode can be enabled only if opam is found and \"opam var root\" succeeds."
+  ;; FIXME: Should we include the current switch in the lighter?
   :lighter " OPSW"
-  :keymap opam-switch--mode-keymap
-  :group 'opam-switch
-  (when opam-switch-mode
+  (if (not opam-switch-mode)
+      (opam-switch--reset-env)
     (condition-case sig
         (progn
           (opam-switch--root)
           (opam-switch--setup-opam-switch-mode))
       (t (setq opam-switch-mode nil)
-         (message "Opam-Switch mode disabled %s" (pp-to-string sig))))))
+         (message "Opam-Switch mode disabled: %s" (pp-to-string sig))))))
 
 (provide 'opam-switch-mode)
 
