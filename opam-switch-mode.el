@@ -311,7 +311,7 @@ not any other shells outside Emacs."
   (append
    ;; first the current switch as info with a separator
    '(["current switch: " nil
-      :active t
+      :active nil
       :suffix (opam-switch--get-current-switch)
       :help "Shows the currently selected opam switch"]
      "-------")
@@ -321,13 +321,13 @@ not any other shells outside Emacs."
       `[,switch
         (opam-switch-set-switch ,switch)
         :active t
-        :help ,(concat "select opam switch \"" switch "\"")])
+        :help ,(concat "Select opam switch \"" switch "\"")])
     (opam-switch--get-switches))
    ;; now reset as last element
    '(
      ["reset" (opam-switch-set-switch "")
       :active opam-switch--saved-env
-      :help "reset to state when emacs was started"])))
+      :help "Reset to state when Emacs was started"])))
 
 (defun opam-switch--setup-opam-switch-mode ()
   "Re-define menu for `opam-switch-mode'.
@@ -341,7 +341,7 @@ is automatically created by `define-minor-mode'."
     opam-switch-mode-map
     "opam mode menu"
     ;; FIXME: Use `:filter'?
-    (cons "opam-switch"
+    (cons "Opam-switch"
           (opam-switch--menu-items))))
 
 ;;;###autoload
