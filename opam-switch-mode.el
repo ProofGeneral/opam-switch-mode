@@ -186,7 +186,7 @@ This function should not be called directly; see `opam-switch--root'."
       (nreverse opam-switches))))
 
 (defvar opam-switch--switch-history nil
-  "Minibuffer history list for `opam-switch--set-switch'.")
+  "Minibuffer history list for `opam-switch-set-switch'.")
 
 (defvar opam-switch--saved-env nil
   "Saved environment variables, overwritten by an opam switch.
@@ -249,7 +249,8 @@ switch overwrote them."
          (file-name-nondirectory current-switch)
       "<none>")))
 
-(defun opam-switch--set-switch (switch-name)
+;;;###autoload
+(defun opam-switch-set-switch (switch-name)
   "Choose and set an opam switch.
 Set opam switch SWITCH-NAME, which must be a valid opam switch
 name.  When called interactively, the switch name must be entered
@@ -272,7 +273,7 @@ runs.  This a can be used to inform other modes that may run
 background processes that depend on the currently active opam
 switch.
 
-For obvious reasons, `opam-switch--set-switch' will only affect Emacs and
+For obvious reasons, `opam-switch-set-switch' will only affect Emacs and
 not any other shells outside Emacs."
   (interactive
    (let* ((switches (opam-switch--get-switches))
@@ -297,11 +298,8 @@ not any other shells outside Emacs."
       (opam-switch--set-env opam-env)))
   (run-hooks 'opam-switch-change-opam-switch-hook))
 
-;; FIXME: This autoload didn't work.  If we want to autoload the command,
-;; then we need to place the autoload on the command itself (and arguably
-;; rename it without the "--").
-;; ;;;###autoload
-(defalias 'opam-switch-set-switch #'opam-switch--set-switch)
+(define-obsolete-function-alias 'opam-switch--set-switch
+  #'opam-switch-set-switch "opam-switch-mode 1.1")
 
 ;;; minor mode, keymap and menu
 
@@ -321,13 +319,13 @@ not any other shells outside Emacs."
    (mapcar
     (lambda (switch)
       `[,switch
-        (opam-switch--set-switch ,switch)
+        (opam-switch-set-switch ,switch)
         :active t
         :help ,(concat "select opam switch \"" switch "\"")])
     (opam-switch--get-switches))
    ;; now reset as last element
    '(
-     ["reset" (opam-switch--set-switch "")
+     ["reset" (opam-switch-set-switch "")
       :active opam-switch--saved-env
       :help "reset to state when emacs was started"])))
 
