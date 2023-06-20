@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Author: Erik Martin-Dorel, 2023
+# License for this script: MIT
 
 set -eu
 
