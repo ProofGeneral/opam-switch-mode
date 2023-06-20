@@ -1,5 +1,6 @@
 # opam-switch-mode
 
+[![NonGNU ELPA](https://elpa.nongnu.org/nongnu/opam-switch-mode-badge.svg)](https://elpa.nongnu.org/nongnu/opam-switch-mode.html)
 [![MELPA](https://melpa.org/packages/opam-switch-mode-badge.svg)](https://melpa.org/#/opam-switch-mode)
 
 Provide a command `opam-switch-set-switch` to change the opam switch
@@ -13,9 +14,13 @@ entry "reset" to reset the environment to the state when Emacs was started.
 
 ## Installing `opam-switch-mode`
 
-The recommended way to install this mode relies on the
-[MELPA](https://melpa.org/) repository of Emacs packages, along with the
-[`use-package`](https://github.com/jwiegley/use-package) macro.
+We recommend to install this mode from either the 
+[NonGNU ELPA](https://elpa.nongnu.org/) or the
+[MELPA](https://melpa.org/) repository of Emacs packages.
+
+If you use the
+[`use-package`](https://github.com/jwiegley/use-package) macro, the
+recommended configuration is:
 Assuming you have already set up those in your `.emacs`, just write:
 
 ```elisp
@@ -24,6 +29,10 @@ Assuming you have already set up those in your `.emacs`, just write:
   :hook
   (coq-mode . opam-switch-mode))
 ```
+
+If you don't use `use-package`, do the following instead:
+
+    (add-hook 'coq-mode-hook #'opam-switch-mode)
 
 so that the minor mode is automatically enabled when `coq-mode` is on,
 see also [`opam-switch-mode` aware modes](#opam-switch-mode-aware-modes).
