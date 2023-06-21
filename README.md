@@ -1,6 +1,7 @@
 # opam-switch-mode
 
-[![NonGNU ELPA](https://elpa.nongnu.org/nongnu/opam-switch-mode-badge.svg)](https://elpa.nongnu.org/nongnu/opam-switch-mode.html)
+[![NonGNU ELPA](https://elpa.nongnu.org/nongnu/opam-switch-mode.svg)](https://elpa.nongnu.org/nongnu/opam-switch-mode.html)
+[![MELPA Stable](https://stable.melpa.org/packages/opam-switch-mode-badge.svg)](https://stable.melpa.org/#/opam-switch-mode)
 [![MELPA](https://melpa.org/packages/opam-switch-mode-badge.svg)](https://melpa.org/#/opam-switch-mode)
 
 Provide a command `opam-switch-set-switch` to change the opam switch
