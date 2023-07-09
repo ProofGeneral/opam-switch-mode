@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- (opam-switch-mode-lighter): Indicate the switch name in the minibuffer, closes [#11](https://github.com/ProofGeneral/opam-switch-mode/issues/11)
+
 ### Fixed
 
 ### Changed

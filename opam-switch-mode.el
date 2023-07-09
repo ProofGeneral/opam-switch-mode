@@ -344,13 +344,16 @@ not any other shells outside Emacs."
    (mapcar
     (lambda (switch)
       `[,switch
-        (opam-switch-set-switch ,switch)
+        (progn (opam-switch-set-switch ,switch)
+               (redraw-display))
         :active t
         :help ,(concat "Select opam switch \"" switch "\"")])
     (opam-switch--get-switches))
    ;; now reset as last element
    '(
-     ["reset" (opam-switch-set-switch "")
+     ["reset"
+      (progn (opam-switch-set-switch "")
+             (redraw-display))
       :active opam-switch--saved-env
       :help "Reset to state when Emacs was started"])))
 
@@ -371,12 +374,19 @@ is automatically created by `define-minor-mode'."
            :label "OPSW")
            (opam-switch--menu-items))))
 
+(defun opam-switch-mode-lighter ()
+  "Return the lighter for opam-switch-mode which indicates the current switch."
+  (let* ((current-switch (opam-switch--get-current-switch))
+         ;; handle the case of local switches for better UX
+         (shortened (replace-regexp-in-string ".*/" "…/" current-switch t t)))
+    (format " OPSW-%s" shortened)))
+
 ;;;###autoload
 (define-minor-mode opam-switch-mode
   "Toggle opam-switch mode.
 The mode can be enabled only if opam is found and \"opam var root\" succeeds."
   ;; FIXME: Should we include the current switch in the lighter?
-  :lighter " OPSW"
+  :lighter (:eval (opam-switch-mode-lighter))
   (if (not opam-switch-mode)
       (opam-switch--reset-env)
     (condition-case sig
