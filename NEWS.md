@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - **README.md**: Markdown badges
+- (opam-switch--reset-env) unexpectedly cleared exec-path, closes [#13](https://github.com/ProofGeneral/opam-switch-mode/issues/13)
 
 ### Changed
 

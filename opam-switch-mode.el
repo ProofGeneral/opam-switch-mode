@@ -238,7 +238,11 @@ Reset variable `exec-path' and all environment variables to the values
 they had in this Emacs session before the first chosen opam
 switch overwrote them."
   (mapc (lambda (x) (setenv (car x) (cadr x))) opam-switch--saved-env)
-  (setq exec-path opam-switch--saved-exec-path)
+  (when opam-switch--saved-exec-path
+    ;; it's nil if one enables `opam-switch-mode'
+    ;; but does not call `opam-switch-set-switch'
+    ;; cf. https://github.com/ProofGeneral/opam-switch-mode/issues/13
+    (setq exec-path opam-switch--saved-exec-path))
   (setq opam-switch--saved-env nil)
   (setq opam-switch--saved-exec-path nil))
 
