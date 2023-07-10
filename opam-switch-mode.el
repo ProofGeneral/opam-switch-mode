@@ -208,28 +208,32 @@ The variable `exec-path' is saved in addition to environment variables."
 	(mapcar (lambda (x) (list (car x) (getenv (car x)))) opam-env))
   (setq opam-switch--saved-exec-path exec-path))
 
-(defun opam-switch--set-env (opam-env)
+(defun opam-switch--set-env (opam-env previous-prefix)
   "Set a new opam environment.
 Environment variables in OPAM-ENV are put into the environment of
 the current Emacs session.  The variable `exec-path' is changed to
 match the environment PATH.
 
-It is unclear which value in variable `exec-path' corresponds to a
-previously set opam switch and also which entry in the PATH
+It's not that clear which value in variable `exec-path' corresponds to
+a previously set opam switch and also which entry in the PATH
 environment variable in OPAM-ENV corresponds to the new switch.
-Therefore this function uses the following heuristic.  First all
-entries in variable `exec-path' that match `(opam-switch--root)' are deleted.
-Then, the first entry for PATH that maches `(opam-switch--root)' is added at the
-front of variable `exec-path'."
+Therefore this function uses the following heuristic.
+First, all entries in variable `exec-path' that match
+PREVIOUS-PREFIX or `(opam-switch--root)' are deleted.
+Then, the first entry for PATH that matches the new switch prefix
+is added at the front of variable `exec-path'."
   (let ((new-bin-dir
          (seq-find
-          (lambda (dir) (string-prefix-p (opam-switch--root) dir))
+          (lambda (dir) (string-prefix-p (opam-switch--get-current-switch-prefix-from opam-env) dir))
           (parse-colon-path (cadr (assoc "PATH" opam-env))))))
     (unless new-bin-dir
-      (error "No opam-root directory in PATH"))
+      (error "No OPAM_SWITCH_PREFIX directory in PATH"))
     (mapc (lambda (x) (setenv (car x) (cadr x))) opam-env)
     (setq exec-path
-          (seq-remove (lambda (dir) (string-prefix-p (opam-switch--root) dir)) exec-path))
+          (seq-remove
+           (lambda (dir) (or (string-prefix-p (opam-switch--root) dir)
+                             (and previous-prefix (string-prefix-p previous-prefix dir))))
+           exec-path))
     (push new-bin-dir exec-path)))
 
 (defun opam-switch--reset-env ()
@@ -238,15 +242,30 @@ Reset variable `exec-path' and all environment variables to the values
 they had in this Emacs session before the first chosen opam
 switch overwrote them."
   (mapc (lambda (x) (setenv (car x) (cadr x))) opam-switch--saved-env)
-  (setq exec-path opam-switch--saved-exec-path)
+  (when opam-switch--saved-exec-path
+    ;; it's nil if one enables `opam-switch-mode'
+    ;; but does not call `opam-switch-set-switch'
+    ;; cf. https://github.com/ProofGeneral/opam-switch-mode/issues/13
+    (setq exec-path opam-switch--saved-exec-path))
   (setq opam-switch--saved-env nil)
   (setq opam-switch--saved-exec-path nil))
 
+(defun opam-switch--get-current-switch-prefix ()
+  "Return prefix of current switch or nil."
+  (getenv "OPAM_SWITCH_PREFIX"))
+
+(defun opam-switch--get-current-switch-prefix-from (opam-env)
+  "Return prefix of next switch from `opam-env'."
+  (cadr (assoc "OPAM_SWITCH_PREFIX" opam-env)))
+
 (defun opam-switch--get-current-switch ()
   "Return name of current switch or \"<none>\"."
-  (let ((current-switch (getenv "OPAM_SWITCH_PREFIX")))
+  (let ((current-switch (opam-switch--get-current-switch-prefix)))
     (if current-switch
-         (file-name-nondirectory current-switch)
+        (if (string-prefix-p (opam-switch--root) current-switch)
+            (file-name-nondirectory current-switch)
+          ;; else current-switch is local
+          (directory-file-name (file-name-directory current-switch)))
       "<none>")))
 
 ;;;###autoload
@@ -287,15 +306,16 @@ not any other shells outside Emacs."
   (if (equal switch-name "")
       (opam-switch--reset-env)
     (let ((output-string (opam-switch--command-as-string "env" switch-name t))
+          (prefix (opam-switch--get-current-switch-prefix))
           opam-env)
       (unless output-string
         (error
-         "Command 'opam env %s' failed - probably because of invalid opam switch \"%s\""
+         "Command 'opam env --switch=%s' failed - probably because of invalid opam switch \"%s\""
          switch-name switch-name))
       (setq opam-env (car (read-from-string output-string)))
       (unless opam-switch--saved-env
         (opam-switch--save-current-env opam-env))
-      (opam-switch--set-env opam-env)))
+      (opam-switch--set-env opam-env prefix)))
   (run-hooks 'opam-switch-change-opam-switch-hook))
 
 (define-obsolete-function-alias 'opam-switch--set-switch
@@ -341,7 +361,7 @@ is automatically created by `define-minor-mode'."
     opam-switch-mode-map
     "opam mode menu"
     ;; FIXME: Use `:filter'?
-    (cons "Opam-switch"
+    (cons "OPSW"
           (opam-switch--menu-items))))
 
 ;;;###autoload

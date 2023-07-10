@@ -14,8 +14,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - **README.md**: Markdown badges
+- (opam-switch--reset-env) unexpectedly cleared exec-path, closes [#13](https://github.com/ProofGeneral/opam-switch-mode/issues/13)
+- (opam-switch--get-current-switch) returned "_opam" for local switches
+- (opam-switch--set-env) raised "No opam-root directory in PATH" for local switches, closes [#12](https://github.com/ProofGeneral/opam-switch-mode/issues/12)
 
 ### Changed
+
+- Replace menu-bar's name (s/Opam-switch/OPSW/) so it matches mode-bar's name
 
 ### Removed
 
