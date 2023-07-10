@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- Replace menu-bar's name (s/Opam-switch/OPSW/) so it matches mode-bar's name
+
 ### Removed
 
 ## [1.1] - 2023-06-20
