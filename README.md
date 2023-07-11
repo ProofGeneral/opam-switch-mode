@@ -25,12 +25,10 @@ recommended configuration is as follows.
 
 Assuming you have already set up those in your `.emacs`, just write:
 
-```elisp
-(use-package opam-switch-mode
-  :ensure t
-  :hook
-  (coq-mode . opam-switch-mode))
-```
+    (use-package opam-switch-mode
+      :ensure t
+      :hook
+      (coq-mode . opam-switch-mode))
 
 If you don't use `use-package`, do the following instead:
 
@@ -69,5 +67,5 @@ any other shells outside Emacs.
 ## `opam-switch-mode` aware modes
 
 - `coq-mode` from [`proof-general`](https://proofgeneral.github.io/)
-  can kill the coq background process, when the opam switch changes,
+  can kill the coq background process when the opam switch changes,
   see [`coq-kill-coq-on-opam-switch`](https://proofgeneral.github.io/doc/master/userman/Coq-Proof-General/#index-coq_002dkill_002dcoq_002don_002dopam_002dswitch).
