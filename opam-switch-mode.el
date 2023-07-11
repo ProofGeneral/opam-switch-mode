@@ -7,7 +7,7 @@
 ;; Maintainer: proof-general-maintainers@groupes.renater.fr
 ;; URL: https://github.com/ProofGeneral/opam-switch-mode
 ;; Package-Requires: ((emacs "25.1"))
-;; Version: 1.2
+;; Version: 1.3-git
 ;;
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;;
