@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **README.md**: Document the feature from [1.3]
+
 ### Removed
 
 ## [1.3] - 2023-07-11
