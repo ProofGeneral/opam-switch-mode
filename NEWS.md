@@ -5,7 +5,7 @@ will be documented in this file, in reverse chronological order.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [1.3] - 2023-07-11
 
 ### Added
 
@@ -58,7 +58,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Initial release, distributed on MELPA.
 
 <!-- bottom -->
-[Unreleased]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.2...HEAD
+[1.3]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.2...1.3
 [1.2]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.1...1.2
 [1.1]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.0...1.1
 [1.0]: https://github.com/ProofGeneral/opam-switch-mode/releases/tag/1.0
