@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- New hook: opam-switch-before-change-opam-switch-hook
+- (opam-switch-set-switch): Call (run-hooks 'opam-switch-before-change-opam-switch-hook) before changing the env
+
 ### Fixed
 
 ### Changed

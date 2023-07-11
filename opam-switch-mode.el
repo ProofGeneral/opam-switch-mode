@@ -81,10 +81,14 @@ without color, non-ascii arrow symbols and that it is in English.
 Otherwise parsing the output of opam commands won't work."
   :type '(repeat string))
 
+(defcustom opam-switch-before-change-opam-switch-hook nil
+  "Hook run before the opam switch changes.
+This is used, for instance, to let merlin kill the ocamlmerlin
+background process before the opam switch changes."
+  :type 'hook)
+
 (defcustom opam-switch-change-opam-switch-hook nil
-  "Hook run when the opam switch changes.
-This is used, for instance, to let Proof General kill the coq
-background process when the opam switch changes."
+  "Hook run after the opam switch changes."
   :type 'hook)
 
 ;;; Code:
@@ -303,6 +307,7 @@ not any other shells outside Emacs."
        switches nil t "" 'opam-switch--switch-history nil))))
   (when (and (equal switch-name "") (not opam-switch--saved-env))
     (error "No saved opam environment, cannot reset"))
+  (run-hooks 'opam-switch-before-change-opam-switch-hook)
   (if (equal switch-name "")
       (opam-switch--reset-env)
     (let ((output-string (opam-switch--command-as-string "env" switch-name t))
