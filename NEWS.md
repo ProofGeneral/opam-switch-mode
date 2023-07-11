@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Replace menu-bar's name (s/Opam-switch/OPSW/) so it matches mode-bar's name
 - Change mode-bar's first element, so it expands to "OPSW - Opam Switch Mode"
+- **release.sh**: auto-update **NEWS.md**
 
 ### Removed
 
