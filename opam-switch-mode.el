@@ -361,8 +361,10 @@ is automatically created by `define-minor-mode'."
     opam-switch-mode-map
     "opam mode menu"
     ;; FIXME: Use `:filter'?
-    (cons "OPSW"
-          (opam-switch--menu-items))))
+    (append
+     (list "OPSW - Opam Switch Mode"
+           :label "OPSW")
+           (opam-switch--menu-items))))
 
 ;;;###autoload
 (define-minor-mode opam-switch-mode
