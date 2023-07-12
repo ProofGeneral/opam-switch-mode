@@ -93,6 +93,8 @@ background process before the opam switch changes."
 
 ;;; Code:
 
+(defvar opam-switch--mode-lighter nil)
+
 (defun opam-switch--run-command-without-stderr (sub-cmd
                                                 &optional switch sexp
                                                 &rest args)
@@ -321,6 +323,7 @@ not any other shells outside Emacs."
       (unless opam-switch--saved-env
         (opam-switch--save-current-env opam-env))
       (opam-switch--set-env opam-env prefix)))
+  (setq opam-switch--mode-lighter nil)
   (force-mode-line-update t)
   (run-hooks 'opam-switch-change-opam-switch-hook))
 
@@ -375,10 +378,14 @@ is automatically created by `define-minor-mode'."
 
 (defun opam-switch-mode-lighter ()
   "Return the lighter for opam-switch-mode which indicates the current switch."
-  (let* ((current-switch (opam-switch--get-current-switch))
-         ;; handle the case of local switches for better UX
-         (shortened (replace-regexp-in-string ".*/" "…/" current-switch t t)))
-    (format " OPSW-%s" shortened)))
+  (or opam-switch--mode-lighter
+      (let* ((current-switch (opam-switch--get-current-switch))
+             ;; handle the case of local switches for better UX
+             (shortened
+              (replace-regexp-in-string ".*/" "…/" current-switch
+                                        t t)))
+        (setq opam-switch--mode-lighter
+              (format " OPSW-%s" shortened)))))
 
 ;;;###autoload
 (define-minor-mode opam-switch-mode

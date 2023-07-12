@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **README.md**: Use vanilla (not GitHub-flavored) Markdown syntax for snippets
 - Replace (redraw-display) with (force-mode-line-update t)
+- Memoize (opam-switch-mode-lighter) to speed-up mode-line updates
 
 ### Removed
 
