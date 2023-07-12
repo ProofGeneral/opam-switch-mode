@@ -4,7 +4,7 @@ All notable changes to [opam-switch-mode](https://github.com/ProofGeneral/opam-s
 will be documented in [this file](https://github.com/ProofGeneral/opam-switch-mode/blob/master/NEWS.md),
 in reverse chronological order.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
