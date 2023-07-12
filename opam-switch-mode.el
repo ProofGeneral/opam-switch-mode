@@ -321,6 +321,7 @@ not any other shells outside Emacs."
       (unless opam-switch--saved-env
         (opam-switch--save-current-env opam-env))
       (opam-switch--set-env opam-env prefix)))
+  (force-mode-line-update t)
   (run-hooks 'opam-switch-change-opam-switch-hook))
 
 (define-obsolete-function-alias 'opam-switch--set-switch
@@ -344,16 +345,14 @@ not any other shells outside Emacs."
    (mapcar
     (lambda (switch)
       `[,switch
-        (progn (opam-switch-set-switch ,switch)
-               (redraw-display))
+        (opam-switch-set-switch ,switch)
         :active t
         :help ,(concat "Select opam switch \"" switch "\"")])
     (opam-switch--get-switches))
    ;; now reset as last element
    '(
      ["reset"
-      (progn (opam-switch-set-switch "")
-             (redraw-display))
+      (opam-switch-set-switch "")
       :active opam-switch--saved-env
       :help "Reset to state when Emacs was started"])))
 
