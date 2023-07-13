@@ -182,6 +182,7 @@ This function should not be called directly; see `opam-switch--root'."
   "Return all opam switches as list of strings."
   (let (opam-switches)
     (with-temp-buffer
+      ;; FIXME: Use "opam switch -s" ?
       (unless (eq (opam-switch--run-command-without-stderr "switch") 0)
         ;; opam exit status different from 0 -- some error occured
         (error "Command 'opam switch' failed"))
