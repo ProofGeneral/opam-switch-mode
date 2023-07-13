@@ -100,9 +100,9 @@ background process before the opam switch changes."
                                                 &rest args)
   "Run opam SUB-CMD, without capturing error output.
 Run opam SUB-CMD with additional arguments and insert the output
-in the current buffer at point.  Error output (stderr) is
-discarded.  If SWITCH is not nil, an option \"--swith=SWITCH\" is
-added. If SEXP is t, option --sexp is added. All remaining
+in the current buffer at point.  Error output (stderr) is discarded.
+If SWITCH is not nil, options \"--switch=SWITCH --set-switch\" are
+added.  If SEXP is t, option --sexp is added. All remaining
 arguments ARGS are added as arguments.
 
 Return exit status of the opam invocation.
@@ -114,7 +114,8 @@ therfore respect file-name handlers specified via
          (append opam-switch-common-environment process-environment))
         (options (append args opam-switch-common-options)))
     (when switch
-      (push (format "--switch=%s" switch) options))
+      (push (format "--switch=%s" switch) options)
+      (push "--set-switch" options))
     (when sexp
       (push "--sexp" options))
     ;; (message "run %s %s %s" opam-switch-program-name sub-cmd options)
@@ -318,7 +319,7 @@ not any other shells outside Emacs."
           opam-env)
       (unless output-string
         (error
-         "Command 'opam env --switch=%s' failed - probably because of invalid opam switch \"%s\""
+         "Command 'opam env --switch=%s --set-switch' failed - probably because of invalid opam switch \"%s\""
          switch-name switch-name))
       (setq opam-env (car (read-from-string output-string)))
       (unless opam-switch--saved-env

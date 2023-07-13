@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Use command `opam env --switch=$it --set-switch`, so the env var `$OPAMSWITCH` is also set
+
 ### Fixed
 
 ### Changed
