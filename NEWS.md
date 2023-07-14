@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **release.sh**: Remove noise (empty headings) in **NEWS.md** at release time
+
 ### Removed
 
 ## [1.6] - 2023-07-14
@@ -22,17 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Use command `opam env --switch=$it --set-switch`, so the env var `$OPAMSWITCH` is also set
 
-### Fixed
-
-### Changed
-
-### Removed
-
 ## [1.5] - 2023-07-12
-
-### Added
-
-### Fixed
 
 ### Changed
 
@@ -40,21 +32,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Replace (redraw-display) with (force-mode-line-update t)
 - Memoize (opam-switch-mode-lighter) to speed-up mode-line updates
 
-### Removed
-
 ## [1.4] - 2023-07-11
 
 ### Added
 
 - (opam-switch-mode-lighter): Indicate the switch name in the minibuffer, closes [#11](https://github.com/ProofGeneral/opam-switch-mode/issues/11)
 
-### Fixed
-
 ### Changed
 
 - **README.md**: Document the feature from [1.3]
-
-### Removed
 
 ## [1.3] - 2023-07-11
 
@@ -62,12 +48,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - New hook: opam-switch-before-change-opam-switch-hook
 - (opam-switch-set-switch): Call (run-hooks 'opam-switch-before-change-opam-switch-hook) before changing the env
-
-### Fixed
-
-### Changed
-
-### Removed
 
 ## [1.2] - 2023-07-11
 
@@ -88,8 +68,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Change mode-bar's first element, so it expands to "OPSW - Opam Switch Mode"
 - **release.sh**: auto-update **NEWS.md**
 
-### Removed
-
 ## [1.1] - 2023-06-20
 
 ### Added
@@ -99,10 +77,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - tweaks and cleanups by [**@monnier**](https://github.com/monnier)
-
-### Changed
-
-### Removed
 
 ## [1.0] - 2022-11-15
 

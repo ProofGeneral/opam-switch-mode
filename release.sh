@@ -7,7 +7,8 @@ set -eu
 perl_replace() {
     local str1="$1"
     local str2="$2"
-    perl -wpe 'BEGIN{$str1=shift @ARGV; $str2=shift @ARGV; $s1=quotemeta($str1); }; s/$s1/$str2/g;' "$str1" "$str2"
+    local slurp="${3:+0777}"
+    perl -wp"$slurp"e 'BEGIN{$str1=shift @ARGV; $str2=shift @ARGV; $s1=quotemeta($str1); }; s/$s1/$str2/g;' "$str1" "$str2"
 }
 
 tweak_changelog() {
@@ -18,6 +19,24 @@ tweak_changelog() {
     next_full="## [$next] - $(date -I)"
 
     if [ "$step" = '1' ]; then
+        local replace=(
+'### Added
+
+#'
+'### Fixed
+
+#'
+'### Changed
+
+#'
+'### Removed
+
+#')
+        local r
+        for r in "${replace[@]}"; do
+            cp -f "$file" "$file~"
+            perl_replace "$r" "#" "slurp" <"$file~" > "$file"
+        done
         local line_unreleased
         line_unreleased=$(grep "$file" -e 'Unreleased.*\.\.\.HEAD')
         local released_tmp
@@ -30,7 +49,7 @@ tweak_changelog() {
         perl_replace "$line_unreleased" "$released" <"$file~" > "$file"
 
     elif [ "$step" = '2' ]; then
-        local section="## [Unreleased]
+        local section='## [Unreleased]
 
 ### Added
 
@@ -40,12 +59,12 @@ tweak_changelog() {
 
 ### Removed
 
-"
+'
         local unreleased="[Unreleased]: https://github.com/ProofGeneral/opam-switch-mode/compare/$next...HEAD"
         cp -fv "$file" "$file~"
         perl_replace "$next_full" "$section$next_full" <"$file~" > "$file"
         cp -fv "$file" "$file~"
-        perl_replace "<!-- bottom -->" "<!-- bottom -->
+        perl_replace '<!-- bottom -->' "<!-- bottom -->
 $unreleased" <"$file~" > "$file"
 
     else
