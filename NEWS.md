@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **README.md**: Mention Tuareg and Merlin, regarding opam-switch-mode support
 - **release.sh**: Remove noise (empty headings) in **NEWS.md** at release time
 
 ### Removed
