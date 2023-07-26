@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - **README.md**: Mention Tuareg and Merlin, regarding opam-switch-mode support
 - **release.sh**: Remove noise (empty headings) in **NEWS.md** at release time
+- (opam-switch--get-switches): Use command `opam switch -s`, so we avoid regexp filtering code, closes [#15](https://github.com/ProofGeneral/opam-switch-mode/issues/15)
 
 ### Removed
 
