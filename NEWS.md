@@ -6,19 +6,13 @@ in reverse chronological order.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
-
-### Added
-
-### Fixed
+## [1.7] - 2023-07-26
 
 ### Changed
 
 - **README.md**: Mention Tuareg and Merlin, regarding opam-switch-mode support
 - **release.sh**: Remove noise (empty headings) in **NEWS.md** at release time
 - (opam-switch--get-switches): Use command `opam switch -s`, so we avoid regexp filtering code, closes [#15](https://github.com/ProofGeneral/opam-switch-mode/issues/15)
-
-### Removed
 
 ## [1.6] - 2023-07-14
 
@@ -85,7 +79,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Initial release, distributed on MELPA.
 
 <!-- bottom -->
-[Unreleased]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.6...HEAD
+[1.7]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.6...1.7
 [1.6]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.5...1.6
 [1.5]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.4...1.5
 [1.4]: https://github.com/ProofGeneral/opam-switch-mode/compare/1.3...1.4
