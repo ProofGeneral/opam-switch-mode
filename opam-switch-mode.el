@@ -181,17 +181,13 @@ This function should not be called directly; see `opam-switch--root'."
 
 (defun opam-switch--get-switches ()
   "Return all opam switches as list of strings."
-  (let (opam-switches)
-    (with-temp-buffer
-      ;; FIXME: Use "opam switch -s" ?
-      (unless (eq (opam-switch--run-command-without-stderr "switch") 0)
-        ;; opam exit status different from 0 -- some error occured
-        (error "Command 'opam switch' failed"))
-      (goto-char (point-min))
-      (forward-line)                    ;Skip first (header) line.
-      (while (re-search-forward "^.. *\\([^ \n\t]+\\)" nil t)
-        (push (match-string 1) opam-switches))
-      (nreverse opam-switches))))
+  (with-temp-buffer
+    (unless
+        (eq (opam-switch--run-command-without-stderr "switch" nil nil "-s") 0)
+      ;; option -s means --short
+      ;; opam exit status different from 0 implies some error occured
+      (error "Command 'opam switch' failed"))
+    (split-string (buffer-string) "\n" t)))
 
 (defvar opam-switch--switch-history nil
   "Minibuffer history list for `opam-switch-set-switch'.")
@@ -393,7 +389,6 @@ is automatically created by `define-minor-mode'."
 (define-minor-mode opam-switch-mode
   "Toggle opam-switch mode.
 The mode can be enabled only if opam is found and \"opam var root\" succeeds."
-  ;; FIXME: Should we include the current switch in the lighter?
   :lighter (:eval (opam-switch-mode-lighter))
   (if (not opam-switch-mode)
       (opam-switch--reset-env)
