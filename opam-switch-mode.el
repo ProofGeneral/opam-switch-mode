@@ -108,7 +108,7 @@ arguments ARGS are added as arguments.
 Return exit status of the opam invocation.
 
 Internally this function uses `process-file' internally and will
-therfore respect file-name handlers specified via
+therefore respect file-name handlers specified via
 `default-directory'."
   (let ((process-environment
          (append opam-switch-common-environment process-environment))
@@ -127,7 +127,7 @@ therfore respect file-name handlers specified via
 Return nil if the opam command fails.
 Return all output as string otherwise.
 
-If SWITCH is not nil, an option \"--swith=SWITCH\" is added.
+If SWITCH is not nil, an option \"--switch=SWITCH\" is added.
 If SEXP is t, option --sexp is added.
 All remaining arguments ARGS are added as arguments.
 
@@ -185,7 +185,7 @@ This function should not be called directly; see `opam-switch--root'."
     (unless
         (eq (opam-switch--run-command-without-stderr "switch" nil nil "-s") 0)
       ;; option -s means --short
-      ;; opam exit status different from 0 implies some error occured
+      ;; opam exit status different from 0 implies some error occurred
       (error "Command 'opam switch' failed"))
     (split-string (buffer-string) "\n" t)))
 
